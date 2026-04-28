@@ -27,18 +27,28 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [cardKey, setCardKey] = useState(0);
 
+  const [error, setError] = useState<string | null>(null);
+
   const stumble = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch("/api/stumble", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ topic: selectedTopic }),
       });
+      
       const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to fetch discovery");
+      }
+      
       setDiscovery(data);
       setCardKey((k) => k + 1);
-    } catch {
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Something went wrong.");
       setDiscovery(null);
     } finally {
       setLoading(false);
