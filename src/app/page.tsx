@@ -59,7 +59,7 @@ export default function Home() {
   return (
     <div className="relative z-10 flex flex-col h-dvh font-sans">
       {/* Top Nav */}
-      <nav className="flex items-center justify-between px-6 py-4 shrink-0">
+      <nav className="flex items-center justify-between px-6 py-3 shrink-0">
         <div className="flex items-center gap-2">
           <Compass className="w-6 h-6 text-signal-orange" />
           <span className="text-xl font-bold tracking-tight">Stumble.ai</span>
@@ -71,13 +71,13 @@ export default function Home() {
       </nav>
 
       {/* Topic Selector */}
-      <div className="flex justify-center px-4 pb-4 shrink-0">
-        <div className="flex flex-wrap justify-center gap-2">
+      <div className="shrink-0 px-4 pb-3">
+        <div className="flex flex-row gap-2 overflow-x-auto scrollbar-hide whitespace-nowrap pb-1">
           {TOPICS.map((topic) => (
             <button
               key={topic}
               onClick={() => setSelectedTopic(topic)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 border ${
+              className={`shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 border ${
                 selectedTopic === topic
                   ? "bg-signal-orange/15 border-signal-orange/50 text-signal-orange"
                   : "bg-glass border-glass-border text-foreground/60 hover:bg-glass-hover hover:text-foreground/80"
@@ -229,7 +229,7 @@ export default function Home() {
       </div>
 
       {/* Bottom Dock */}
-      <div className="shrink-0 flex justify-center pb-8 pt-4 px-6">
+      <div className="shrink-0 flex justify-center pb-6 pt-3 px-6">
         <button
           onClick={stumble}
           disabled={loading}
