@@ -47,8 +47,15 @@ export async function POST(request: Request) {
           );
           const wikiData = await wikiRes.json();
           data.imageUrl = wikiData.thumbnail?.source || null;
+          // Hallucinated URLs cause 404s. We overwrite the websiteUrl with the guaranteed Wikipedia page.
+          if (wikiData.content_urls?.desktop?.page) {
+            data.websiteUrl = wikiData.content_urls.desktop.page;
+          } else {
+            data.websiteUrl = `https://en.wikipedia.org/wiki/${encodeURIComponent(data.wikipediaTopic)}`;
+          }
         } catch {
           data.imageUrl = null;
+          data.websiteUrl = `https://www.google.com/search?q=${encodeURIComponent(data.title)}`;
         }
       }
 
