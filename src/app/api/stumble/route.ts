@@ -22,7 +22,7 @@ export async function POST(request: Request) {
           role: "user",
           parts: [
             {
-              text: `You are the ultimate internet serendipity engine (like the old StumbleUpon). The user wants to discover something obscure, fascinating, and mind-blowing about: ${topic}. Return ONLY a JSON object with no markdown formatting: {"title": "The Name of the Concept/Website/Event", "hook": "One mind-blowing sentence that hooks the reader.", "deepDive": "A 2-3 sentence fascinating explanation.", "searchQuery": "The exact Google search term to explore this rabbit hole."}`,
+              text: `You are the ultimate internet serendipity engine (like the old StumbleUpon). The user wants to discover something obscure, fascinating, and mind-blowing about: ${topic}. Return ONLY a JSON object with no markdown formatting: {"title": "Name", "hook": "Mind-blowing sentence", "deepDive": "2-3 paragraphs of fascinating explanation", "websiteUrl": "A specific, real, cool website URL to explore this (e.g., an archive, museum, interactive site, or official page)", "wikipediaTopic": "The exact Wikipedia article title related to this (e.g., 'Antikythera_mechanism')"}`,
             },
           ],
         },
@@ -38,6 +38,20 @@ export async function POST(request: Request) {
 
     try {
       const data = JSON.parse(cleaned);
+
+      // Fetch Wikipedia image
+      if (data.wikipediaTopic) {
+        try {
+          const wikiRes = await fetch(
+            `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(data.wikipediaTopic)}`
+          );
+          const wikiData = await wikiRes.json();
+          data.imageUrl = wikiData.thumbnail?.source || null;
+        } catch {
+          data.imageUrl = null;
+        }
+      }
+
       return Response.json(data);
     } catch (parseErr) {
       console.error("JSON Parse Error:", cleaned);

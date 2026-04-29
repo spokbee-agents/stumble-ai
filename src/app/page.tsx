@@ -8,7 +8,8 @@ interface Discovery {
   title: string;
   hook: string;
   deepDive: string;
-  searchQuery: string;
+  websiteUrl: string;
+  imageUrl: string | null;
 }
 
 const TOPICS = [
@@ -92,7 +93,7 @@ export default function Home() {
       </div>
 
       {/* Discovery Card Area */}
-      <div className="flex-1 flex items-center justify-center px-6 overflow-hidden">
+      <div className="flex-1 flex items-start sm:items-center justify-center px-4 sm:px-6 overflow-y-auto py-4 scrollbar-hide">
         <AnimatePresence mode="wait">
           {loading ? (
             <motion.div
@@ -145,7 +146,7 @@ export default function Home() {
               className="w-full max-w-lg"
             >
               <div
-                className="relative rounded-2xl border border-glass-border p-8 overflow-hidden"
+                className="relative rounded-2xl border border-glass-border overflow-hidden"
                 style={{
                   background:
                     "linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)",
@@ -154,7 +155,7 @@ export default function Home() {
               >
                 {/* Shimmer accent line */}
                 <div
-                  className="absolute top-0 left-0 right-0 h-px"
+                  className="absolute top-0 left-0 right-0 h-px z-10"
                   style={{
                     background:
                       "linear-gradient(90deg, transparent, rgba(255,107,0,0.5), transparent)",
@@ -163,32 +164,48 @@ export default function Home() {
                   }}
                 />
 
-                <div className="flex items-start gap-3 mb-4">
-                  <div className="shrink-0 mt-1 w-2 h-2 rounded-full bg-signal-orange" />
-                  <h2 className="text-2xl font-bold leading-tight tracking-tight">
-                    {discovery.title}
-                  </h2>
+                {/* Wikipedia Image */}
+                {discovery.imageUrl && (
+                  <div className="relative w-full h-48 sm:h-64 overflow-hidden">
+                    <img
+                      src={discovery.imageUrl}
+                      alt={discovery.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  </div>
+                )}
+
+                <div className="p-6 sm:p-8">
+                  <div className="flex items-start gap-3 mb-4">
+                    <div className="shrink-0 mt-1 w-2 h-2 rounded-full bg-signal-orange" />
+                    <h2 className="text-xl sm:text-2xl font-bold leading-tight tracking-tight">
+                      {discovery.title}
+                    </h2>
+                  </div>
+
+                  <p className="text-base sm:text-lg text-signal-orange/90 font-medium leading-relaxed mb-4">
+                    {discovery.hook}
+                  </p>
+
+                  <p className="text-sm sm:text-base text-foreground/60 leading-relaxed mb-6 whitespace-pre-line">
+                    {discovery.deepDive}
+                  </p>
+
+                  {/* Explore button */}
+                  <a
+                    href={discovery.websiteUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-200 active:scale-95"
+                    style={{
+                      background: "linear-gradient(135deg, #FF6B00 0%, #FF8C33 100%)",
+                    }}
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    Explore This Site
+                  </a>
                 </div>
-
-                <p className="text-lg text-signal-orange/90 font-medium leading-relaxed mb-4">
-                  {discovery.hook}
-                </p>
-
-                <p className="text-foreground/60 leading-relaxed mb-6">
-                  {discovery.deepDive}
-                </p>
-
-                {/* Explore button */}
-                <a
-                  href={`https://www.google.com/search?q=${encodeURIComponent(discovery.searchQuery)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border border-glass-border bg-glass text-foreground/70 hover:text-foreground hover:bg-glass-hover transition-all duration-200"
-                  style={{ backdropFilter: "blur(12px)" }}
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  Explore Rabbit Hole
-                </a>
               </div>
             </motion.div>
           ) : (
